@@ -1,0 +1,26 @@
+version: 0.1
+log:
+  fields:
+    service: registry
+storage:
+  cache:
+    blobdescriptor: inmemory
+  swift:
+    username: kiwenlau:swift
+    password: oNWxGQO6kOGYlqgiM2p0NUWSAqf6MQ5OD2PB6h5E
+    authurl: http://127.0.0.1/auth/v1.0
+    tenantid: kiwenlau
+    insecureskipverify: false
+    container: docker-registry
+    rootdirectory: /registry
+http:
+    addr: :6000
+    debug:
+        addr: localhost:6001
+    headers:
+        X-Content-Type-Options: [nosniff]
+health:
+  storagedriver:
+    enabled: true
+    interval: 10s
+    threshold: 3
