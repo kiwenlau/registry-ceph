@@ -27,138 +27,18 @@ sudo docker run -d \
                 ceph/demo
 ```
 
-**3. Create a new Ceph User**
+**3. Configure Ceph with swift API**
+
+Create Ceph User
 
 ```
 sudo docker exec ceph-demo radosgw-admin user create --uid="kiwenlau" --display-name="kiwenlau"
 ```
 
-We can get **access_key** and **secret_key** from the output:
-
-```
-{
-    "user_id": "kiwenlau",
-    "display_name": "kiwenlau",
-    "email": "",
-    "suspended": 0,
-    "max_buckets": 1000,
-    "auid": 0,
-    "subusers": [],
-    "keys": [
-        {
-            "user": "kiwenlau",
-            "access_key": "QBUP96T428H5RABDPPWY",
-            "secret_key": "XIicy3UnEXyBdTAupWU9JMOKgrjA5l9jQu9RuIjw"
-        }
-    ],
-    "swift_keys": [],
-    "caps": [],
-    "op_mask": "read, write, delete",
-    "default_placement": "",
-    "placement_tags": [],
-    "bucket_quota": {
-        "enabled": false,
-        "max_size_kb": -1,
-        "max_objects": -1
-    },
-    "user_quota": {
-        "enabled": false,
-        "max_size_kb": -1,
-        "max_objects": -1
-    },
-    "temp_url_keys": []
-}
-```
-
-**4. Create a new Ceph Bucket**
-
-```
-vim s3test.py
-```
-
-Please replace **access_key** and **secret_key**
-
-```
-import boto
-import boto.s3.connection
-access_key = 'XC5SVD9ZGQD0D0BG3J0H'
-secret_key = 'uu3oqDZQjBFA22YqcuO4siuxecFVM0yYYHZ6COm4'
-conn = boto.connect_s3(
-aws_access_key_id = access_key,
-aws_secret_access_key = secret_key,
-host = "0.0.0.0",
-is_secure=False,
-calling_format = boto.s3.connection.OrdinaryCallingFormat(),
-)
-bucket = conn.create_bucket('docker-registry')
-for bucket in conn.get_all_buckets():
-        print "{name}\t{created}".format(
-                name = bucket.name,
-                created = bucket.creation_date,
-)
-```
-
-```
-python s3test.py
-```
-
-output:
-
-```
-docker-registry	2016-05-25T05:36:05.000Z
-```
-
-**5. Creat a new Swift User**
+Creat a new Swift User**
 
 ```
 sudo docker exec ceph-demo radosgw-admin subuser create --uid=kiwenlau --subuser=kiwenlau:swift --access=full
-```
-
-output:
-
-```
-{
-    "user_id": "kiwenlau",
-    "display_name": "kiwenlau",
-    "email": "",
-    "suspended": 0,
-    "max_buckets": 1000,
-    "auid": 0,
-    "subusers": [
-        {
-            "id": "kiwenlau:swift",
-            "permissions": "full-control"
-        }
-    ],
-    "keys": [
-        {
-            "user": "kiwenlau",
-            "access_key": "QBUP96T428H5RABDPPWY",
-            "secret_key": "XIicy3UnEXyBdTAupWU9JMOKgrjA5l9jQu9RuIjw"
-        }
-    ],
-    "swift_keys": [
-        {
-            "user": "kiwenlau:swift",
-            "secret_key": "DfwKCVUo7bCnXleTxbzymvRknoC5s8SfWIh4r2Sy"
-        }
-    ],
-    "caps": [],
-    "op_mask": "read, write, delete",
-    "default_placement": "",
-    "placement_tags": [],
-    "bucket_quota": {
-        "enabled": false,
-        "max_size_kb": -1,
-        "max_objects": -1
-    },
-    "user_quota": {
-        "enabled": false,
-        "max_size_kb": -1,
-        "max_objects": -1
-    },
-    "temp_url_keys": []
-}
 ```
 
 Create secret key
@@ -186,14 +66,14 @@ output:
     "keys": [
         {
             "user": "kiwenlau",
-            "access_key": "QBUP96T428H5RABDPPWY",
-            "secret_key": "XIicy3UnEXyBdTAupWU9JMOKgrjA5l9jQu9RuIjw"
+            "access_key": "7HOTQULR1L5MC5FAS5L9",
+            "secret_key": "b2G6ItcLcQEXNUV0cJ4HZmoEAqibYR1xTr51A3wR"
         }
     ],
     "swift_keys": [
         {
             "user": "kiwenlau:swift",
-            "secret_key": "oNWxGQO6kOGYlqgiM2p0NUWSAqf6MQ5OD2PB6h5E"
+            "secret_key": "H5ZBBAI5GVZPa88acJu0eovdwkRSfxqmsYZS3C8j"
         }
     ],
     "caps": [],
@@ -214,25 +94,31 @@ output:
 }
 ```
 
-Test Swift Access:
+create registry container
 
 ```
-swift -A http://127.0.0.1/auth/1.0 -U kiwenlau:swift -K 'oNWxGQO6kOGYlqgiM2p0NUWSAqf6MQ5OD2PB6h5E' list
+swift -A http://127.0.0.1/auth/v1.0 -U kiwenlau:swift -K 'H5ZBBAI5GVZPa88acJu0eovdwkRSfxqmsYZS3C8j' post registry
+```
+
+list registry container
+
+```
+swift -A http://127.0.0.1/auth/v1.0 -U kiwenlau:swift -K 'H5ZBBAI5GVZPa88acJu0eovdwkRSfxqmsYZS3C8j' list
 ```
 
 output:
 
 ```
-docker-registry
+registry
 ```
 
-**6. Run Docker registry within Docker container**
+**4. Run Docker registry within Docker container**
 
 ```
 vim config.yml
 ```
 
-Please replace **access_key** and **secret_key**
+Please replace **password**
 
 ```
 version: 0.1
@@ -244,11 +130,11 @@ storage:
     blobdescriptor: inmemory
   swift:
     username: kiwenlau:swift
-    password: oNWxGQO6kOGYlqgiM2p0NUWSAqf6MQ5OD2PB6h5E
+    password: 2y1rdwUggpMjPbpl5iwErnqPRJOAGmDbGSvefmWU 
     authurl: http://127.0.0.1/auth/v1.0
     tenantid: kiwenlau
     insecureskipverify: false
-    container: docker-registry
+    container: registry
     rootdirectory: /registry
 http:
     addr: :6000
@@ -273,7 +159,7 @@ sudo docker run -d \
                 registry:2.4.1
 ```
 
-**7. Push image to docker registry**
+**5. Push image to docker registry**
 
 ```
 sudo docker pull busyboxy

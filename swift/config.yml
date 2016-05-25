@@ -7,11 +7,11 @@ storage:
     blobdescriptor: inmemory
   swift:
     username: kiwenlau:swift
-    password: oNWxGQO6kOGYlqgiM2p0NUWSAqf6MQ5OD2PB6h5E
+    password: H5ZBBAI5GVZPa88acJu0eovdwkRSfxqmsYZS3C8j 
     authurl: http://127.0.0.1/auth/v1.0
     tenantid: kiwenlau
     insecureskipverify: false
-    container: docker-registry
+    container: registry
     rootdirectory: /registry
 http:
     addr: :6000
