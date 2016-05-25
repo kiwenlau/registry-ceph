@@ -7,7 +7,7 @@ storage:
     blobdescriptor: inmemory
   swift:
     username: kiwenlau:swift
-    password: H5ZBBAI5GVZPa88acJu0eovdwkRSfxqmsYZS3C8j 
+    password: i7irknpBhFTlbOz6MtYRYFIgMXRoKyeeOA5VRDSI 
     authurl: http://127.0.0.1/auth/v1.0
     tenantid: kiwenlau
     insecureskipverify: false

@@ -1,4 +1,4 @@
-I want to use Ceph as the storage driver for docker registry, however, I failed to do it with Ceph S3 API. I use Ubuntu 14.04 and run both Ceph and Docker registry within Docker containers based on ceph/demo and registry:2.4.1 image. Steps to reproduce it described as follows:
+I want to use Ceph as the storage driver for docker registry. I use Ubuntu 14.04 as host and run both Ceph and Docker registry within Docker containers based on ceph/demo and registry:2.4.1 image. 
 
 **1. Configure Docker**
 
@@ -27,24 +27,18 @@ sudo docker run -d \
                 ceph/demo
 ```
 
-**3. Configure Ceph with swift API**
+**3. Configure Ceph**
 
-Create Ceph User
+Create user
 
 ```
 sudo docker exec ceph-demo radosgw-admin user create --uid="kiwenlau" --display-name="kiwenlau"
 ```
 
-Creat a new Swift User**
+Creat subuser
 
 ```
 sudo docker exec ceph-demo radosgw-admin subuser create --uid=kiwenlau --subuser=kiwenlau:swift --access=full
-```
-
-Create secret key
-
-```
-sudo docker exec ceph-demo radosgw-admin key create --subuser=kiwenlau:swift --key-type=swift --gen-secret
 ```
 
 output:
