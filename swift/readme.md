@@ -1,4 +1,7 @@
-I want to use Ceph as the storage driver for docker registry. I use Ubuntu 14.04 as host and run both Ceph and Docker registry within Docker containers based on ceph/demo and registry:2.4.1 image. 
+##Use Ceph as the Storage Driver for Docker Registry through Swift API 
+
+- Run ceph within docker container based on **kiwenlau/ceph-demo** image
+- Run docker registry within docker container based on **kiwenlau/registry:2.4.1** image
 
 **1. Configure Docker**
 
@@ -6,7 +9,7 @@ I want to use Ceph as the storage driver for docker registry. I use Ubuntu 14.04
 sudo vim /etc/default/docker
 ```
 
-Docker registry will listen on port 6000
+**docker registry will listen on port 6000**
 
 ```
 DOCKER_OPTS="-H unix:///var/run/docker.sock --insecure-registry 127.0.0.1:6000"
@@ -88,6 +91,12 @@ output:
 }
 ```
 
+install [python-swiftclient](https://github.com/openstack/python-swiftclient)
+
+```
+sudo apt-get install python-setuptoolssudo easy_install pipsudo pip install --upgrade setuptoolssudo pip install --upgrade python-swiftclient
+```
+
 create registry container
 
 ```
@@ -156,7 +165,7 @@ sudo docker run -d \
 **5. Push image to docker registry**
 
 ```
-sudo docker pull busyboxy
+sudo docker pull busybox
 sudo docker tag busybox 127.0.0.1:6000/busybox
 sudo docker push 127.0.0.1:6000/busybox
 ```
