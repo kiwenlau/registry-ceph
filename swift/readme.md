@@ -1,4 +1,4 @@
-##Use Ceph as the Storage Driver for Docker Registry through Swift API 
+##Use Ceph as Storage Driver for Docker Registry through Swift API 
 
 - Run ceph within docker container based on **kiwenlau/ceph-demo** image
 - Run docker registry within docker container based on **kiwenlau/registry:2.4.1** image
@@ -22,12 +22,14 @@ sudo restart docker
 **2. Run Ceph within Docker container**
 
 ```
+sudo docker pull kiwenlau/ceph-demo
 sudo docker run -d \
                 -e MON_IP=127.0.0.1 \
                 -e CEPH_NETWORK=127.0.0.0/24 \
+                -e RGW_CIVETWEB_PORT=8080 \
                 --net=host \
                 --name=ceph-demo \
-                ceph/demo
+                kiwenlau/ceph-demo
 ```
 
 **3. Configure Ceph**
@@ -100,13 +102,13 @@ sudo apt-get install python-setuptoolssudo easy_install pipsudo pip install --
 create registry container
 
 ```
-swift -A http://127.0.0.1/auth/v1.0 -U kiwenlau:swift -K 'H5ZBBAI5GVZPa88acJu0eovdwkRSfxqmsYZS3C8j' post registry
+swift -A http://127.0.0.1:8080/auth/v1.0 -U kiwenlau:swift -K 'H5ZBBAI5GVZPa88acJu0eovdwkRSfxqmsYZS3C8j' post registry
 ```
 
 list registry container
 
 ```
-swift -A http://127.0.0.1/auth/v1.0 -U kiwenlau:swift -K 'H5ZBBAI5GVZPa88acJu0eovdwkRSfxqmsYZS3C8j' list
+swift -A http://127.0.0.1:8080/auth/v1.0 -U kiwenlau:swift -K 'H5ZBBAI5GVZPa88acJu0eovdwkRSfxqmsYZS3C8j' list
 ```
 
 output:
@@ -155,11 +157,12 @@ health:
 Run docker registry within docker container
 
 ```
+sudo docker pull kiwenlau/registry:2.4.1
 sudo docker run -d \
                 -v `pwd`/config.yml:/etc/docker/registry/config.yml \
                 --net=host \
                 --name=docker-registry \
-                registry:2.4.1
+                kiwenlau/registry:2.4.1
 ```
 
 **5. Push image to docker registry**
