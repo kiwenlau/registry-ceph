@@ -136,7 +136,7 @@ storage:
   swift:
     username: kiwenlau:swift
     password: 2y1rdwUggpMjPbpl5iwErnqPRJOAGmDbGSvefmWU 
-    authurl: http://127.0.0.1/auth/v1.0
+    authurl: http://127.0.0.1:8080/auth/v1.0
     tenantid: kiwenlau
     insecureskipverify: false
     container: registry
